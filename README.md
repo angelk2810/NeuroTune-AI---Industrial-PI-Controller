@@ -1,20 +1,109 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+🤖 NeuroTune – AI Self-Tuning PI Controller
+NeuroTune is an intelligent, machine learning–based self-tuning PI controller that automatically optimizes proportional (Kp) and integral (Ki) gains in real time.
+Traditional PI controllers rely on fixed, manually tuned parameters. NeuroTune replaces static tuning with adaptive intelligence — allowing the system to learn from performance and continuously improve stability and efficiency.
 
-# Run and deploy your AI Studio app
+🚀 Motivation
+PI controllers are widely used in:
+Motor speed control
+Robotics
+Industrial automation
+HVAC systems
+Power electronics
+However, manual tuning methods such as trial-and-error or Ziegler–Nichols:
+Do not adapt to changing conditions
+Require expert knowledge
+Lead to instability under load variations
+Reduce efficiency over time
+NeuroTune introduces AI-driven adaptive tuning to solve this problem.
 
-This contains everything you need to run your app locally.
+💡 Solution Overview
+NeuroTune integrates:
+System performance monitoring
+Machine learning–based gain prediction
+Real-time controller adjustment
+Interactive dashboard visualization
+Instead of using fixed Kp and Ki values, the system continuously evaluates control performance and predicts optimized gains.
 
-View your app in AI Studio: https://ai.studio/apps/4ea86f03-d99d-499e-99b5-c0bfd7fce271
+⚙️ System Architecture
+Copy code
 
-## Run Locally
+Simulated / Real Plant
+        ↓
+Sensor Data Collection
+        ↓
+Performance Feature Extraction
+        ↓
+ML Model Prediction (Kp, Ki)
+        ↓
+PI Controller Update
+        ↓
+Optimized System Response
+        ↓
+Dashboard Monitoring
 
-**Prerequisites:**  Node.js
+🧠 Machine Learning Approach
+Models Implemented
+Random Forest Regressor
+Gradient Boosting Regressor
+Multi-Layer Perceptron (Neural Network)
+Optional Advanced Approach
+Reinforcement Learning (Q-Learning / DQN)
+Model Inputs
+Instantaneous error
+Rate of change of error
+Overshoot
+Settling time
+Stability indicators
+Model Outputs
+Optimized Kp
+Optimized Ki
 
+🛠 Tech Stack
+Control & Simulation
+Python
+Control Systems Library (python-control)
+Machine Learning
+Scikit-learn
+TensorFlow / Keras
+Backend API
+Flask / FastAPI
+Frontend Dashboard
+React / Web Dashboard
+Plotly / Chart.js for visualization
+Deployment (Optional)
+Firebase
+AWS
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+📊 Dashboard Features
+Live system response graph
+Real-time Kp and Ki display
+Stability score indicator
+Performance comparison (Manual vs AI)
+Alert system for instability detection
+Gain adjustment history
+
+📈 Applications
+NeuroTune can be applied to:
+Electric vehicles
+Robotics systems
+Smart factories
+Renewable energy systems
+HVAC automation
+Industrial motor control
+
+🎯 Key Advantages
+✔ Eliminates manual tuning
+✔ Adaptive to changing load conditions
+✔ Improved stability
+✔ Reduced overshoot
+✔ Better energy efficiency
+✔ Scalable architecture
+
+🔮 Future Enhancements
+Edge AI deployment on embedded systems
+Multi-controller optimization
+Cloud-based fleet monitoring
+Real hardware integration
+
+👨‍💻 Project Type
+AI + Control Systems + Software Engineering
