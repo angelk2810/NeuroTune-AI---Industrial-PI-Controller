@@ -1,8 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { SystemState, ControlMode } from "./types";
+import React, { useState, useEffect } from 'react';
+import { 
+  Activity, Cpu, AlertTriangle, Settings, History, ShieldCheck, BrainCircuit,
+  Zap, LayoutDashboard, Bell, Database, Menu, X, ChevronRight,
+  ArrowUpRight, ArrowDownRight, RefreshCw
+} from 'lucide-react';
+import { 
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, 
+  ResponsiveContainer, AreaChart, Area 
+} from 'recharts';
+import { motion } from 'motion/react';
+import { SystemState, ControlMode } from './types';
+import { cn } from './lib/utils';
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [history, setHistory] = useState<any[]>([]);
+
+  // 🔥 INITIAL STATE (NO BACKEND)
   const [state, setState] = useState<SystemState>({
     setpoint: 100,
     output: 0,
@@ -28,12 +43,10 @@ export default function App() {
     controlSignal: 0,
   });
 
-  const [history, setHistory] = useState<any[]>([]);
-
-  // 🔥 Simulation Engine (Frontend Only)
+  // 🔥 FRONTEND SIMULATION ENGINE
   useEffect(() => {
     const interval = setInterval(() => {
-      setState((prev) => {
+      setState(prev => {
         const dt = 0.1;
 
         const disturbance =
@@ -81,90 +94,115 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // 🔥 Update Chart History
+  // 🔥 UPDATE CHART HISTORY
   useEffect(() => {
-    setHistory((prev) => [
+    setHistory(prev => [
       ...prev.slice(-50),
       {
         time: new Date().toLocaleTimeString(),
         output: state.output,
         setpoint: state.setpoint,
         error: state.error,
-      },
+        kp: state.kp,
+        ki: state.ki,
+        controlSignal: state.controlSignal,
+      }
     ]);
   }, [state]);
 
+  // 🔥 MODE CHANGE (NO API)
+  const handleModeChange = (mode: ControlMode) => {
+    setState(prev => ({ ...prev, mode }));
+  };
+
   return (
-    <div className="min-h-screen bg-[#0a0b0d] text-white p-8 space-y-8">
-      <h1 className="text-3xl font-bold">NeuroTune AI – Frontend Simulation</h1>
+    <div className="flex h-screen bg-[#0a0b0d] overflow-hidden text-white">
+      
+      {/* Sidebar */}
+      <aside className={cn(
+        "h-full bg-black/40 border-r border-white/5 flex flex-col z-50",
+        isSidebarOpen ? "w-[280px]" : "w-0 overflow-hidden"
+      )}>
+        <div className="p-6">
+          <h1 className="text-lg font-bold">NeuroTune</h1>
+        </div>
+        <nav className="flex-1 px-4 space-y-2">
+          <button onClick={() => setActiveTab('dashboard')}>Dashboard</button>
+        </nav>
+      </aside>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="glass-panel p-4">
-          <p className="text-sm text-slate-400">Output</p>
-          <h2 className="text-2xl font-mono text-cyan-400">
-            {state.output.toFixed(2)}
-          </h2>
+      {/* Main */}
+      <main className="flex-1 p-6 space-y-6 overflow-y-auto">
+        
+        <h2 className="text-xl font-bold">Dashboard</h2>
+
+        {/* Stats */}
+        <div className="grid grid-cols-4 gap-6">
+          <div className="glass-panel p-4">
+            <p className="text-xs text-slate-400">Output</p>
+            <h3 className="text-2xl font-mono text-cyan-400">
+              {state.output.toFixed(2)}
+            </h3>
+          </div>
+
+          <div className="glass-panel p-4">
+            <p className="text-xs text-slate-400">Error</p>
+            <h3 className="text-2xl font-mono text-orange-400">
+              {state.error.toFixed(2)}
+            </h3>
+          </div>
+
+          <div className="glass-panel p-4">
+            <p className="text-xs text-slate-400">Stability</p>
+            <h3 className="text-2xl font-mono text-green-400">
+              {state.stabilityScore.toFixed(1)}%
+            </h3>
+          </div>
+
+          <div className="glass-panel p-4">
+            <p className="text-xs text-slate-400">AI Accuracy</p>
+            <h3 className="text-2xl font-mono text-blue-400">
+              {state.modelAccuracy.toFixed(2)}%
+            </h3>
+          </div>
         </div>
 
-        <div className="glass-panel p-4">
-          <p className="text-sm text-slate-400">Error</p>
-          <h2 className="text-2xl font-mono text-orange-400">
-            {state.error.toFixed(2)}
-          </h2>
+        {/* Chart */}
+        <div className="glass-panel p-6 h-[400px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={history}>
+              <CartesianGrid stroke="rgba(255,255,255,0.05)" />
+              <XAxis dataKey="time" hide />
+              <YAxis stroke="rgba(255,255,255,0.3)" />
+              <Tooltip />
+              <Line type="monotone" dataKey="output" stroke="#00d2ff" dot={false} />
+              <Line type="monotone" dataKey="setpoint" stroke="#ffffff55" dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
-        <div className="glass-panel p-4">
-          <p className="text-sm text-slate-400">Stability</p>
-          <h2 className="text-2xl font-mono text-green-400">
-            {state.stabilityScore.toFixed(1)}%
-          </h2>
+        {/* Setpoint Slider */}
+        <div className="glass-panel p-6">
+          <p className="text-xs uppercase text-slate-400 mb-2">Setpoint</p>
+          <input
+            type="range"
+            min="0"
+            max="200"
+            value={state.setpoint}
+            onChange={(e) =>
+              setState(prev => ({
+                ...prev,
+                setpoint: parseInt(e.target.value)
+              }))
+            }
+            className="w-full"
+          />
+          <p className="font-mono text-cyan-400 mt-2">
+            {state.setpoint}
+          </p>
         </div>
 
-        <div className="glass-panel p-4">
-          <p className="text-sm text-slate-400">AI Accuracy</p>
-          <h2 className="text-2xl font-mono text-blue-400">
-            {state.modelAccuracy.toFixed(2)}%
-          </h2>
-        </div>
-      </div>
-
-      {/* Chart */}
-      <div className="glass-panel p-6 h-[400px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={history}>
-            <CartesianGrid stroke="rgba(255,255,255,0.05)" />
-            <XAxis dataKey="time" hide />
-            <YAxis stroke="rgba(255,255,255,0.3)" />
-            <Tooltip />
-            <Line type="monotone" dataKey="output" stroke="#00d2ff" dot={false} />
-            <Line type="monotone" dataKey="setpoint" stroke="#ffffff55" dot={false} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Setpoint Control */}
-      <div className="glass-panel p-6 space-y-4">
-        <p className="text-sm uppercase tracking-wider text-slate-400">
-          Setpoint Control
-        </p>
-        <input
-          type="range"
-          min="0"
-          max="200"
-          value={state.setpoint}
-          onChange={(e) =>
-            setState((prev) => ({
-              ...prev,
-              setpoint: parseInt(e.target.value),
-            }))
-          }
-          className="w-full"
-        />
-        <p className="font-mono text-cyan-400">
-          Setpoint: {state.setpoint}
-        </p>
-      </div>
+      </main>
     </div>
   );
 }
