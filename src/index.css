@@ -1,52 +1,52 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
 
-/* Base Styles */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-industrial-bg: #0a0b0d;
+  --color-industrial-panel: rgba(20, 22, 26, 0.8);
+  --color-industrial-border: rgba(255, 255, 255, 0.05);
+  --color-neon-blue: #00d2ff;
+  --color-neon-green: #39ff14;
+  --color-neon-red: #ff3131;
+  --color-neon-orange: #ff9100;
+}
+
 @layer base {
   body {
-    @apply bg-[#0a0b0d] text-slate-200 font-sans antialiased;
+    @apply bg-industrial-bg text-slate-200 font-sans antialiased;
   }
 }
 
-/* Custom Utilities */
-@layer components {
-  .glass-panel {
-    @apply bg-[rgba(20,22,26,0.8)] backdrop-blur-xl border border-white/5 rounded-2xl shadow-2xl;
-  }
-
-  .neon-text-blue {
-    text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
-  }
-
-  .neon-text-green {
-    text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
-  }
-
-  .neon-border-blue {
-    box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
-  }
+.glass-panel {
+  @apply bg-industrial-panel backdrop-blur-xl border border-industrial-border rounded-2xl shadow-2xl;
 }
 
-/* Scrollbar */
+.neon-text-blue {
+  text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+}
+
+.neon-text-green {
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+
+.neon-border-blue {
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  @apply bg-transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b; /* slate-800 */
-  border-radius: 9999px;
-  transition: background 0.3s;
+  @apply bg-slate-800 rounded-full hover:bg-slate-700 transition-colors;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #334155; /* slate-700 */
-}
